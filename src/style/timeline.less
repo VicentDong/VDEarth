@@ -1,0 +1,84 @@
+@media (max-width: 1920px) {
+  .timeline {
+    font-size: 18px !important;
+  }
+}
+@media (max-width: 1400px) {
+  .timeline {
+    font-size: 16px !important;
+  }
+}
+@media (max-width: 1200px) {
+  .timeline {
+    font-size: 14px !important;
+  }
+}
+@media (max-width: 600px) {
+  .timeline {
+    font-size: 12px !important;
+  }
+}
+
+.timeline {
+  font-size: 12px;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: top;
+  width: 100%;
+  padding: 1em;
+}
+.timeline .control {
+  font-size: 1.5em;
+  padding: 0 0.3em;
+}
+
+.timeline .timeItems {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  padding: 0 1em;
+}
+
+.timeline .timeItems .item {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+.timeline .timeItems .item:last-child .trail {
+  display: none;
+}
+
+.timeline .timeItems .item .radio {
+  width: 1.2em;
+  height: 1.2em;
+  border-radius: 50%;
+  background: #ccc;
+  text-align: left;
+  justify-content: left;
+  z-index: 1;
+}
+
+.timeline .timeItems .item .trail {
+  width: 100%;
+  background: #ccc;
+  border-top: 0.2em solid #ccc;
+  position: absolute;
+  top: 0.5em;
+  left: 0.1em;
+  z-index: 0;
+}
+.timeline .timeItems .item .content {
+  overflow: hidden;
+  text-align: center;
+  margin-left: -50%;
+  margin-right: 10px;
+  font-size: 1.2em;
+}
+.timeline .timeItems .item .on {
+  background: #00ffff;
+}
