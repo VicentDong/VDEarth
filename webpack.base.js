@@ -7,9 +7,9 @@ const copyWebpackPlugin = require('copy-webpack-plugin');
 module.exports = {
   entry: './src/index.js',
   output: {
-    filename: 'VDTimeline.js',
+    filename: 'VDEarth.js',
     path: path.resolve(__dirname, 'dist'),
-    library: 'VDTimeline',
+    library: 'VDEarth',
     libraryTarget: 'umd',
     umdNamedDefine: true,
   },
@@ -20,11 +20,12 @@ module.exports = {
     new CleanWebpackPlugin(),
     new MiniCssExtractPlugin(),
     new OptimizeCssAssetsPlugin(),
-    // new copyWebpackPlugin([
-    //   {
-    //     from: __dirname + '/src/fonts', //打包的静态资源目录地址
-    //     to: './fonts', //打包到dist下面的public
-    //   },
+    new copyWebpackPlugin([
+      {
+        from: __dirname + '/src/fonts', //打包的静态资源目录地址
+        to: './fonts', //打包到dist下面的public
+      },
+    ]),
     //   {
     //     from: __dirname + '/src/data', //打包的静态资源目录地址
     //     to: './data', //打包到dist下面的public
@@ -38,11 +39,21 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.(woff|woff2|eot|ttf|otf|svg|gif|png)$/,
+        test: /\.(woff|woff2|eot|ttf|otf|json)$/,
         use: {
           loader: 'file-loader',
           options: {
             name: 'fonts/[name].[ext]',
+            publicPath: './',
+          },
+        },
+      },
+      {
+        test: /\.(svg|gif|png|jpg)$/,
+        use: {
+          loader: 'file-loader',
+          options: {
+            name: 'images/[name].[ext]',
             publicPath: './',
           },
         },

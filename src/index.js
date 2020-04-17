@@ -1,14 +1,6 @@
-import './font/iconfont.css';
-import './style/timeline.less';
-import TimeLine from './timeline';
+import VDEarth from './VDEarth';
 
-var myTimeLine = new TimeLine();
-
+var myVDEarth = new VDEarth();
 export function init(opt) {
-  myTimeLine.init(opt);
-  return myTimeLine;
-}
-
-export function toStart() {
-  myTimeLine.toStart();
+  return myVDEarth.init(opt);
 }
