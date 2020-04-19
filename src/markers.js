@@ -103,16 +103,16 @@ class marker {
         return model.userData.type == 'name' && model.userData.name == items[i].name
       })
       if(!nameMarker){
-        let geometry = this.vdGeom.createNameMarkerGeom(items[i].name, font);
+        let geometry = this.vdGeom.createNameMarkerGeom(items[i].name +':'+ items[i].total , font);
         let material = this.vdMaterial.createNameMarkerMat();
         nameMarker = new Mesh(geometry, material);
         // 定位
         let position = getPosition(
           parseFloat(items[i].lng),
           parseFloat(items[i].lat),
-          radius
+          radius + window.Math.log2(items[i].total) * 5
         );
-        nameMarker.position.set(position.x, position.y, position.z );
+        nameMarker.position.set(position.x, position.y, position.z);
         // 标记垂直于圆心
         nameMarker.lookAt(new Vector3(position.x * 1.1, position.y* 1.1, position.z* 1.1));
         group.add(nameMarker);
