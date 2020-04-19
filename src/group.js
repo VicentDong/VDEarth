@@ -8,5 +8,8 @@ class group {
     this._group.add(mesh);
     return this._group;
   }
+  children(){
+    return this._group.children;
+  }
 }
 export default group;

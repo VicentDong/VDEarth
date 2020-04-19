@@ -1,4 +1,26 @@
 import _ from 'lodash';
+
+function reconnect(){
+  console.log('重新连接')
+}
+function open(){
+  // Web Socket 已连接上，使用 send() 方法发送数据
+  this.ws.send(this.account + ':' + this.password);
+}
+function receive(evt,callback){
+  var data = evt.data;
+  if (_.isFunction(callback)) {
+    callback(JSON.parse(data));
+  }
+}
+function close(){
+   // 关闭 websocket
+   console.log('连接已关闭...');
+   reconnect()
+}
+function reload(){
+  this.ws.send('reload')
+}
 class socket {
   constructor(server, port, account, password) {
     this.account = account;
@@ -6,31 +28,21 @@ class socket {
     this.server = server;
     this.port = port;
   }
-  static load(callback) {
+
+  init(onmessage){
     if ('WebSocket' in window) {
-      // 打开一个 web socket
-      var uri = 'ws://' + this.server + ':' + this.port;
-      var ws = new WebSocket(uri);
-      // 连接建立后的回调函数
-      ws.onopen = function () {
-        // Web Socket 已连接上，使用 send() 方法发送数据
-        ws.send(this.account + ':' + this.password);
-      };
-
-      // 接收到服务器消息后的回调函数
-      ws.onmessage = function (evt) {
-        var data = evt.data;
-        if (_.isFunction(callback)) {
-          console.log(data);
-          callback(data);
+      try {
+        this.uri = 'ws://' + this.server+ ':' + this.port;
+        this.ws = new WebSocket(this.uri);
+        this.ws.onopen = ()=>{open.call(this);}
+        this.ws.onmessage = (evt)=>{receive.call(this,evt,onmessage);}
+        this.ws.onclose = ()=>{close.call(this);}
+        window.onbeforeunload = ()=>{
+          reload()
         }
-      };
-
-      // 连接关闭后的回调函数
-      ws.onclose = function () {
-        // 关闭 websocket
-        console.log('连接已关闭...');
-      };
+      } catch (error) {
+        console.log(error)
+      }
     } else {
       // 浏览器不支持 WebSocket
       console.log('您的浏览器不支持 WebSocket!');

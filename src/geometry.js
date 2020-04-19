@@ -8,11 +8,13 @@ import {
   PlaneGeometry,
   TextGeometry,
   Matrix4,
+  ImageBitmapLoader,
 } from 'three';
+
 class vdGeom {
   constructor() {}
-  createGlobeGeom() {
-    let geom = new SphereGeometry(200, 200, 200);
+  createGlobeGeom(size) {
+    let geom = new SphereGeometry(size, 200, 200);
     return geom;
   }
   createStarGeom() {
@@ -32,16 +34,16 @@ class vdGeom {
     return planeGeometry;
   }
   createBoxMarkerGeom(depth) {
-    let boxGeometry = new BoxGeometry(1, 1, depth);
+    let boxGeometry = new BoxGeometry(2, 2, depth);
     return boxGeometry;
   }
   createNameMarkerGeom(name, font) {
     // let nameGeometry = new PlaneGeometry(100, 150, 50);
     let textGeo = new TextGeometry(name, {
       font: font,
-      size: 2,
-      height: 1,
-      curveSegments: 0.5,
+      size: 4,
+      height: 0.5,
+      curveSegments: 0.1,
       bevelEnabled: false,
     });
     // 文字居中

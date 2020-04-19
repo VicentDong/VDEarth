@@ -6,8 +6,8 @@ class mesh {
     this.vdGeom = new geometry();
     this.vdMaterial = new material();
   }
-  createGlobe(textrue) {
-    let vdGeom = this.vdGeom.createGlobeGeom();
+  createGlobe(size,textrue) {
+    let vdGeom = this.vdGeom.createGlobeGeom(size);
     let vdMaterial = this.vdMaterial.createGlobeMat(textrue);
     return new Mesh(vdGeom, vdMaterial);
   }

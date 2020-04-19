@@ -28,7 +28,7 @@ class material {
   }
   createBoxMakerMat() {
     var boxMarkerMaterial = new MeshPhongMaterial({
-      color: 0x0fb4dd,
+      color: '#6dc3ec',
       side: DoubleSide,
       depthTest: true,
     });
@@ -37,7 +37,7 @@ class material {
   createNameMarkerMat() {
     var nameMarkerMaterial = new MeshBasicMaterial({
       color: '#fff',
-      transparent: true,
+      transparent: true, 
     });
     return nameMarkerMaterial;
   }

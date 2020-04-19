@@ -1,7 +1,9 @@
 import { Shape, Mesh, Math, Vector3, CanvasTexture } from 'three';
 import geometry from './geometry';
 import material from './material';
-
+import {getPosition} from './utils'
+import {boxMarkAnimate} from './animation'
+import _ from 'lodash'
 // 创建飞机形状
 function createPlaneShape() {
   // 飞机形状
@@ -25,16 +27,6 @@ function createPlaneShape() {
   planeShape.lineTo(-0.2, -1.3);
   planeShape.lineTo(-0.2, -0.2);
   return planeShape;
-}
-
-// 经纬度转图形position
-function getPosition(lng, lat, radius) {
-  let phi = (90 - lat) * (window.Math.PI / 180),
-    theta = (lng + 180) * (window.Math.PI / 180),
-    x = -(radius * window.Math.sin(phi) * window.Math.cos(theta)),
-    z = radius * window.Math.sin(phi) * window.Math.sin(theta),
-    y = radius * window.Math.cos(phi);
-  return { x: x, y: y, z: z };
 }
 
 function createNameCanvasTexture(name) {
@@ -79,43 +71,54 @@ class marker {
       group.add(plane);
     }
   }
-  addBoxMarkers(group, items) {
+  addBoxMarkers(group,radius, items) {
     for (let i = 0; i < items.length; i++) {
-      let boxMarkerGeom = this.vdGeom.createBoxMarkerGeom(
-        items[i].value / 10000
-      );
-      let boxMarkerMat = this.vdMaterial.createBoxMakerMat();
-      let boxMarker = new Mesh(boxMarkerGeom, boxMarkerMat);
-      // 定位
-      let position = getPosition(
-        items[i].position[0],
-        items[i].position[1],
-        200
-      );
-      boxMarker.position.set(position.x, position.y, position.z);
-
-      // 标记垂直于圆心
-      boxMarker.lookAt(new Vector3(0, 0, 0));
-      group.add(boxMarker);
+      let boxMarker =  _.find(group.children,(model)=>{
+        return model.userData.type == 'bar' && model.userData.name == items[i].name
+      })
+      if(!boxMarker){
+        let depth = window.Math.log2(items[i].total) * 5
+        let boxMarkerGeom = this.vdGeom.createBoxMarkerGeom(depth);
+        let boxMarkerMat = this.vdMaterial.createBoxMakerMat();
+        boxMarker = new Mesh(boxMarkerGeom, boxMarkerMat);
+        // 定位
+        let position = getPosition(
+          parseFloat(items[i].lng),
+          parseFloat(items[i].lat),
+          radius
+        );
+        boxMarker.position.set(position.x, position.y, position.z);
+        boxMarker.userData = Object.assign({type:'bar'},items[i]) 
+        // 标记垂直于圆心
+        boxMarker.lookAt(new Vector3(0, 0, 0));
+        group.add(boxMarker);
+      }
+      boxMarker.scale.set(1,1,0.1)
+      boxMarkAnimate(boxMarker);
     }
   }
-  addNameMarkers(group, items, font) {
+  addNameMarkers(group,radius,  items, font) {
     for (let i = 0; i < items.length; i++) {
-      // let textrue = createNameCanvasTexture(items[i].name);
-      let geometry = this.vdGeom.createNameMarkerGeom(items[i].name, font);
-      let material = this.vdMaterial.createNameMarkerMat();
-      var nameMarker = new Mesh(geometry, material);
-      // 定位
-      let position = getPosition(
-        items[i].position[0],
-        items[i].position[1],
-        200
-      );
-      nameMarker.position.set(position.x, position.y, position.z);
-      // 标记垂直于圆心
-      nameMarker.lookAt(new Vector3(0, 0, 0));
-
-      group.add(nameMarker);
+      let nameMarker =  _.find(group.children,(model)=>{
+        return model.userData.type == 'name' && model.userData.name == items[i].name
+      })
+      if(!nameMarker){
+        let geometry = this.vdGeom.createNameMarkerGeom(items[i].name, font);
+        let material = this.vdMaterial.createNameMarkerMat();
+        nameMarker = new Mesh(geometry, material);
+        // 定位
+        let position = getPosition(
+          parseFloat(items[i].lng),
+          parseFloat(items[i].lat),
+          radius
+        );
+        nameMarker.position.set(position.x, position.y, position.z );
+        // 标记垂直于圆心
+        nameMarker.lookAt(new Vector3(position.x * 1.1, position.y* 1.1, position.z* 1.1));
+        group.add(nameMarker);
+      }
+      nameMarker.visible = false;
+      nameMarker.userData = Object.assign({type:'name'},items[i]) 
     }
   }
 }
