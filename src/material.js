@@ -14,7 +14,7 @@ class material {
     return mat;
   }
   createStarMat() {
-    var starsMaterial = new PointsMaterial({ color: 0x888888 });
+    var starsMaterial = new PointsMaterial({ color: 0x8e8e8e });
     return starsMaterial;
   }
   createPlaneMarkerMat() {
@@ -37,7 +37,7 @@ class material {
   createNameMarkerMat() {
     var nameMarkerMaterial = new MeshBasicMaterial({
       color: '#fff',
-      transparent: true, 
+      transparent: true,
     });
     return nameMarkerMaterial;
   }

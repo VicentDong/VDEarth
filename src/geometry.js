@@ -38,7 +38,6 @@ class vdGeom {
     return boxGeometry;
   }
   createNameMarkerGeom(name, font) {
-    // let nameGeometry = new PlaneGeometry(100, 150, 50);
     let textGeo = new TextGeometry(name, {
       font: font,
       size: 4,
@@ -48,8 +47,6 @@ class vdGeom {
     });
     // 文字居中
     textGeo.center();
-
-    // textGeo.applyMatrix4(new Matrix4().makeRotationY(Math.PI));
     return textGeo;
   }
 }
