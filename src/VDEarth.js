@@ -16,6 +16,7 @@ import './images/world.jpg';
 import socket from './socket';
 import { minSize } from './utils';
 import { createModelClick } from './eventLister';
+import { createOvCtrl } from './ovCtrl';
 
 // 初始化渲染器
 function initRenderer() {
@@ -105,6 +106,9 @@ function initObj() {
   // 创建星点
   let stars = new model().createStars();
   this.baseGroup.add(stars);
+
+  // 创建概览组件
+  this.ovCtrl = createOvCtrl();
 
   // 创建连接
   var mySocket = new socket(
