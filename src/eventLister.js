@@ -1,5 +1,7 @@
+
 import { Vector2, Raycaster } from 'three'
 import _ from 'lodash'
+
 // 获取mesh
 function getAllMeshes(obj, meshArr) {
   obj.children.forEach((element) => {
@@ -13,10 +15,12 @@ function getAllMeshes(obj, meshArr) {
 // 柱状标记点击事件
 export function createModelClick() {
   var self = this
+
   //点击事件
   window.addEventListener(
     'click',
     function (e) {
+
       if (self.seledModel) {
         self.seledModel.object.material.color.set('#6dc3ec')
       }
@@ -24,18 +28,16 @@ export function createModelClick() {
         self.nameModel.visible = false
       }
       var mouse = new Vector2()
+
       mouse.x =
         ((e.clientX - window.innerWidth + self.contentWidth) /
-          self.contentWidth) *
-          2 -
-        1
+          self.contentWidth) *2 -1
+
       mouse.y =
         -(
           (e.clientY - window.innerHeight + self.contentHeight) /
           self.contentHeight
-        ) *
-          2 +
-        1
+        ) * 2 +1
 
       var raycaster = new Raycaster()
       // update the picking ray with the camera and mouse position
@@ -52,7 +54,6 @@ export function createModelClick() {
           if (ele.object.userData && ele.object.userData.type === 'bar') {
             self.seledModel = ele
             ele.object.material.color.set('#e0ef08')
-
             self.nameModel = _.find(self.markerGroup.children, (model) => {
               return (
                 model.userData.type == 'name' &&
@@ -75,4 +76,5 @@ export function createModelClick() {
     },
     false
   )
+
 }

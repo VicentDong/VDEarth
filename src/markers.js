@@ -4,6 +4,7 @@ import material from './material'
 import { getPosition } from './utils'
 import { boxMarkAnimate } from './animation'
 import _ from 'lodash'
+
 // 创建飞机形状
 function createPlaneShape() {
   // 飞机形状
@@ -90,19 +91,23 @@ class marker {
           parseFloat(items[i].lng),
           parseFloat(items[i].lat),
           radius
-        )
-        boxMarker.position.set(position.x, position.y, position.z)
-        boxMarker.userData = Object.assign({ type: 'bar' }, items[i])
+
+        );
+        boxMarker.position.set(position.x, position.y, position.z);
+        // 设置柱形图的自定义数据为遍历的数据项
+        boxMarker.userData = Object.assign({ type: 'bar' }, items[i]);
+
         // 标记垂直于圆心
         boxMarker.lookAt(new Vector3(0, 0, 0))
         group.add(boxMarker)
       }
-      boxMarker.scale.set(1, 1, 0.1)
-      boxMarkAnimate(boxMarker)
+
+      // 缩放0.1倍，为后续柱形图动画预留
+      boxMarker.scale.set(1, 1, 0.1);
+      boxMarkAnimate(boxMarker);
     }
   }
 
-  // 创建名称标注
   addNameMarkers(group, radius, items, font) {
     for (let i = 0; i < items.length; i++) {
       let nameMarker = _.find(group.children, (model) => {
@@ -110,13 +115,16 @@ class marker {
           model.userData.type == 'name' && model.userData.name == items[i].name
         )
       })
+
       if (!nameMarker) {
         let geometry = this.vdGeom.createNameMarkerGeom(
           items[i].name + ':' + items[i].total,
           font
-        )
-        let material = this.vdMaterial.createNameMarkerMat()
-        nameMarker = new Mesh(geometry, material)
+
+        );
+        let material = this.vdMaterial.createNameMarkerMat();
+        nameMarker = new Mesh(geometry, material);
+
         // 定位
         let position = getPosition(
           parseFloat(items[i].lng),
@@ -127,6 +135,7 @@ class marker {
         // 标记垂直于圆心
         nameMarker.lookAt(
           new Vector3(position.x * 1.1, position.y * 1.1, position.z * 1.1)
+
         )
         group.add(nameMarker)
       }

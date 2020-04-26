@@ -49,8 +49,6 @@ function initLight() {
 // 初始化场景
 function initScene() {
   this.scene = new Scene()
-  // var bgTexture = new TextureLoader().load('./images/field.jpg');
-  // this.scene.background = bgTexture;
 }
 
 // 实时更新
@@ -182,6 +180,7 @@ function createEarth() {
         this.baseGroup.add(shinePoints)
       }
       break
+
     }
     default:
       break
@@ -215,6 +214,7 @@ class VDEarth {
       port: 9998,
       account: 'admin',
       password: '123456',
+
       theme: 2,
     }
   }

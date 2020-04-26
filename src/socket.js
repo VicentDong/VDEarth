@@ -7,14 +7,17 @@ function open() {
   // Web Socket 已连接上，使用 send() 方法发送数据
   this.ws.send(this.account + ':' + this.password)
 }
+
+// 接受数据执行回调方法
 function receive(evt, callback) {
-  var data = evt.data
+  var data = evt.data;
   if (_.isFunction(callback)) {
     callback(JSON.parse(data))
   }
 }
 function close() {
   // 关闭 websocket
+
   console.log('连接已关闭...')
   reconnect()
 }
@@ -46,8 +49,9 @@ class socket {
         window.onbeforeunload = () => {
           reload()
         }
+
       } catch (error) {
-        console.log(error)
+        console.log(error);
       }
     } else {
       // 浏览器不支持 WebSocket
