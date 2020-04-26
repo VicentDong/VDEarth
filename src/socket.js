@@ -1,43 +1,49 @@
-import _ from 'lodash';
+import _ from 'lodash'
 
-function reconnect(){
+function reconnect() {
   console.log('重新连接')
 }
-function open(){
+function open() {
   // Web Socket 已连接上，使用 send() 方法发送数据
-  this.ws.send(this.account + ':' + this.password);
+  this.ws.send(this.account + ':' + this.password)
 }
-function receive(evt,callback){
-  var data = evt.data;
+function receive(evt, callback) {
+  var data = evt.data
   if (_.isFunction(callback)) {
-    callback(JSON.parse(data));
+    callback(JSON.parse(data))
   }
 }
-function close(){
-   // 关闭 websocket
-   console.log('连接已关闭...');
-   reconnect()
+function close() {
+  // 关闭 websocket
+  console.log('连接已关闭...')
+  reconnect()
 }
-function reload(){
+function reload() {
   this.ws.send('reload')
 }
 class socket {
   constructor(server, port, account, password) {
-    this.account = account;
-    this.password = password;
-    this.server = server;
-    this.port = port;
+    this.account = account
+    this.password = password
+    this.server = server
+    this.port = port
   }
 
-  init(onmessage){
+  init(onmessage) {
     if ('WebSocket' in window) {
       try {
-        this.uri = 'ws://' + this.server+ ':' + this.port;
-        this.ws = new WebSocket(this.uri);
-        this.ws.onopen = ()=>{open.call(this);}
-        this.ws.onmessage = (evt)=>{receive.call(this,evt,onmessage);}
-        this.ws.onclose = ()=>{close.call(this);}
-        window.onbeforeunload = ()=>{
+        this.uri = 'ws://' + this.server + ':' + this.port
+        this.ws = new WebSocket(this.uri)
+        this.ws.onopen = () => {
+          open.call(this)
+        }
+        this.ws.onmessage = (evt) => {
+          receive.call(this, evt, onmessage)
+        }
+        this.ws.onclose = () => {
+          close.call(this)
+        }
+        window.onbeforeunload = () => {
           reload()
         }
       } catch (error) {
@@ -45,9 +51,9 @@ class socket {
       }
     } else {
       // 浏览器不支持 WebSocket
-      console.log('您的浏览器不支持 WebSocket!');
+      console.log('您的浏览器不支持 WebSocket!')
     }
   }
 }
 
-export default socket;
+export default socket

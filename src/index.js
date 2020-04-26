@@ -1,6 +1,6 @@
-import VDEarth from './VDEarth';
+import VDEarth from './VDEarth'
 
-var myVDEarth = new VDEarth();
+var myVDEarth = new VDEarth()
 export function init(opt) {
-  return myVDEarth.init(opt);
+  return myVDEarth.init(opt)
 }
