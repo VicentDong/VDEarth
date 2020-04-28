@@ -32,7 +32,7 @@ class material {
     return planeMaterial
   }
   // 创建柱形图材质
-  createBoxMakerMat() {
+  createBarMakerMat() {
     var boxMarkerMaterial = new MeshPhongMaterial({
       color: '#6dc3ec',
       side: DoubleSide,

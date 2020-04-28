@@ -1,9 +1,9 @@
-const path = require('path');
-let HtmlWebpackPlugin = require('html-webpack-plugin');
-const { CleanWebpackPlugin } = require('clean-webpack-plugin');
-const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin');
-const copyWebpackPlugin = require('copy-webpack-plugin');
+const path = require('path')
+let HtmlWebpackPlugin = require('html-webpack-plugin')
+const { CleanWebpackPlugin } = require('clean-webpack-plugin')
+const MiniCssExtractPlugin = require('mini-css-extract-plugin')
+const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin')
+const copyWebpackPlugin = require('copy-webpack-plugin')
 module.exports = {
   entry: './src/index.js',
   output: {
@@ -22,8 +22,8 @@ module.exports = {
     new OptimizeCssAssetsPlugin(),
     new copyWebpackPlugin([
       {
-        from: __dirname + '/src/fonts', //打包的静态资源目录地址
-        to: './fonts', //打包到dist下面的public
+        from: __dirname + '/src/images', //打包的静态资源目录地址
+        to: './images', //打包到dist下面的public
       },
     ]),
     //   {
@@ -84,4 +84,4 @@ module.exports = {
       root: '_',
     },
   },
-};
+}

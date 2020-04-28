@@ -49,7 +49,7 @@ class vdGeom {
     return planeGeometry
   }
   // 创建柱形图geom
-  createBoxMarkerGeom(depth) {
+  createBarMarkerGeom(depth) {
     let boxGeometry = new BoxGeometry(2, 2, depth)
     return boxGeometry
   }
@@ -64,8 +64,7 @@ class vdGeom {
     for (let i = 0; i < step; i++) {
       let vec = new Vector3()
       // 每个纬线圈内的角度均分
-      let radians =
-        (step * (1 - window.Math.sin((i / step) * window.Math.PI))) / step + 0.5
+      let radians = (step * (1 - window.Math.sin((i / step) * window.Math.PI))) / step + 0.5
 
       for (let j = 0; j < step; j += radians) {
         let c = j / step, // 底图上的横向百分比

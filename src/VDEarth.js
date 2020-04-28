@@ -11,7 +11,7 @@ import TWEEN from '@tweenjs/tween.js'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import _ from 'lodash'
 import model from './model'
-import marker from './markers'
+import markerFactory from './markers/markerFactory'
 import socket from './socket'
 // import { minSize } from "./utils"
 // import { createModelClick } from "./eventLister"
@@ -19,7 +19,6 @@ import './images/world_grey.jpg'
 import './images/world_theme1.jpg'
 import './images/dot.png'
 import './images/shine.png'
-import './images/fire.png'
 
 // 初始化渲染器
 function initRenderer() {
@@ -107,36 +106,40 @@ function createStars() {
 }
 
 // 创建对象
-// function initObj() {
-//   let self = this
-//   let fontloader = new FontLoader()
+function createMarkers() {
+  let self = this
+  // let fontloader = new FontLoader()
 
-//   // 创建连接
-//   var mySocket = new socket(
-//     this.options.server,
-//     this.options.port,
-//     this.options.account,
-//     this.options.password
-//   )
-//   mySocket.init(function (data) {
-//     self.markerGroup = new Group()
-//     // 创建标记
-//     var myMarkers = new marker()
-//     // 柱形
-//     myMarkers.addBoxMarkers(self.markerGroup, self.radius, data)
-//     // 加载字体
-//     if (self.font) {
-//       myMarkers.addNameMarkers(self.markerGroup, self.radius, data, self.font)
-//     } else {
-//       fontloader.load('./fonts/SimHei_Regular.json', function (font) {
-//         self.font = font
-//         myMarkers.addNameMarkers(self.markerGroup, self.radius, data, self.font)
-//       })
-//     }
-//     self.baseGroup.add(self.markerGroup)
-//   })
-//   this.scene.add(this.baseGroup)
-// }
+  // // 创建连接
+  // var mySocket = new socket(
+  //   this.options.server,
+  //   this.options.port,
+  //   this.options.account,
+  //   this.options.password
+  // )
+  // mySocket.init(function (data) {
+  self.markerGroup = new Group()
+  // 创建标记
+  // var myMarkers = new marker()
+  // // 柱形
+  // myMarkers.addBoxMarkers(self.markerGroup, self.radius, data)
+  // // 加载字体
+  // if (self.font) {
+  //   myMarkers.addNameMarkers(self.markerGroup, self.radius, data, self.font)
+  // } else {
+  //   fontloader.load('./fonts/SimHei_Regular.json', function (font) {
+  //     self.font = font
+  //     myMarkers.addNameMarkers(self.markerGroup, self.radius, data, self.font)
+  //   })
+  // }
+  for (var i = 0; i < self.options.markers.length; i++) {
+    let makerFac = markerFactory.create(self.options.markers[i])
+    makerFac.add(self.markerGroup)
+  }
+  self.baseGroup.add(self.markerGroup)
+  // })
+  this.scene.add(this.baseGroup)
+}
 
 // 创建地球
 function createEarth() {
@@ -180,7 +183,6 @@ function createEarth() {
         this.baseGroup.add(shinePoints)
       }
       break
-
     }
     default:
       break
@@ -214,8 +216,47 @@ class VDEarth {
       port: 9998,
       account: 'admin',
       password: '123456',
-
       theme: 2,
+      markers: [
+        {
+          type: 'bar',
+          radius: 200,
+          data: [
+            {
+              name: '中国',
+              lng: '119',
+              lat: '53',
+              total: '1111111',
+            },
+            {
+              name: '美国',
+              lng: '0',
+              lat: '0',
+              total: '890000',
+            },
+          ],
+        },
+        {
+          type: 'img',
+          imgUrl: './images/fire.png',
+          radius: 200,
+          size: 10,
+          data: [
+            {
+              name: '中国',
+              lng: '119',
+              lat: '53',
+              total: '1111111',
+            },
+            {
+              name: '美国',
+              lng: '0',
+              lat: '0',
+              total: '890000',
+            },
+          ],
+        },
+      ],
     }
   }
   init(opt = {}) {
@@ -232,6 +273,8 @@ class VDEarth {
     createStars.call(this)
     animate.call(this)
     createEarth.call(this)
+
+    createMarkers.call(this)
   }
 }
 
