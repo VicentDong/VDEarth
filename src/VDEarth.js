@@ -13,6 +13,8 @@ import _ from 'lodash'
 import model from './model'
 import markerFactory from './markers/markerFactory'
 import socket from './socket'
+import { createOvCtrl } from './ovCtrl'
+import { createThemeCtrl } from './themeCtrl'
 // import { minSize } from "./utils"
 // import { createModelClick } from "./eventLister"
 import './images/world_grey.jpg'
@@ -108,7 +110,6 @@ function createStars() {
 // 创建对象
 function createMarkers() {
   let self = this
-  // let fontloader = new FontLoader()
 
   // // 创建连接
   // var mySocket = new socket(
@@ -221,6 +222,8 @@ class VDEarth {
         {
           type: 'bar',
           radius: 200,
+          width: 5,
+          height: 5,
           data: [
             {
               name: '中国',
@@ -256,10 +259,31 @@ class VDEarth {
             },
           ],
         },
+        {
+          type: 'text',
+          font: './fonts/SimHei_Regular.json',
+          radius: 200,
+          size: 10,
+          data: [
+            {
+              name: '中国',
+              lng: '119',
+              lat: '53',
+              total: '1111111',
+            },
+            {
+              name: '美国',
+              lng: '0',
+              lat: '0',
+              total: '890000',
+            },
+          ],
+        },
       ],
     }
   }
   init(opt = {}) {
+    let self = this
     _.merge(this.options, opt)
     this.contentWidth = this.options.container.offsetWidth
     this.contentHeight = this.options.container.offsetHeight
@@ -275,6 +299,10 @@ class VDEarth {
     createEarth.call(this)
 
     createMarkers.call(this)
+    createOvCtrl()
+    createThemeCtrl(function (val) {
+      self.options.theme = val
+    })
   }
 }
 

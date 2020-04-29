@@ -25,11 +25,12 @@ module.exports = {
         from: __dirname + '/src/images', //打包的静态资源目录地址
         to: './images', //打包到dist下面的public
       },
+
+      {
+        from: __dirname + '/src/fonts', //打包的静态资源目录地址
+        to: './fonts', //打包到dist下面的public
+      },
     ]),
-    //   {
-    //     from: __dirname + '/src/data', //打包的静态资源目录地址
-    //     to: './data', //打包到dist下面的public
-    //   },
     //   {
     //     from: __dirname + '/src/icons', //打包的静态资源目录地址
     //     to: './icons', //打包到dist下面的public

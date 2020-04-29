@@ -10,12 +10,11 @@ class ImgMarker extends Marker {
   add(group) {
     let self = this
     let items = this.opt.data
-    let imgMarker = null
     // 加载贴图
     let textureLoader = new TextureLoader()
     textureLoader.load(this.opt.imgUrl, function (texture) {
       for (var i = 0; i < items.length; i++) {
-        imgMarker = _.find(group.children, model => {
+        let imgMarker = _.find(group.children, model => {
           return model.userData.type == 'img' && model.userData.name == items[i].name
         })
         if (!imgMarker) {
@@ -31,12 +30,12 @@ class ImgMarker extends Marker {
           )
           imgMarker.position.set(position.x, position.y, position.z)
 
-          // 设置柱形图的自定义数据为遍历的数据项
-          imgMarker.userData = Object.assign({ type: self.opt.type }, items[i])
           // 标记垂直于圆心
           imgMarker.lookAt(new Vector3(0, 0, 0))
           group.add(imgMarker)
         }
+        // 设置柱形图的自定义数据为遍历的数据项
+        imgMarker.userData = Object.assign({ type: self.opt.type }, items[i])
       }
     })
   }

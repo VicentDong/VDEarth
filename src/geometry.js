@@ -49,8 +49,8 @@ class vdGeom {
     return planeGeometry
   }
   // 创建柱形图geom
-  createBarMarkerGeom(depth) {
-    let boxGeometry = new BoxGeometry(2, 2, depth)
+  createBarMarkerGeom(depth, width, height) {
+    let boxGeometry = new BoxGeometry(width, height, depth)
     return boxGeometry
   }
 
