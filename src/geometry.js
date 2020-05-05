@@ -51,6 +51,7 @@ class vdGeom {
   // 创建柱形图geom
   createBarMarkerGeom(depth, width, height) {
     let boxGeometry = new BoxGeometry(width, height, depth)
+    boxGeometry.translate(0, 0, -depth / 2)
     return boxGeometry
   }
 

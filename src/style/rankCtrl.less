@@ -1,0 +1,78 @@
+.rank {
+  position: absolute;
+  width: 300px;
+  top: 210px;
+  left: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  color: #ffffff;
+  font-size: 18px;
+  padding: 10px;
+  box-sizing: border-box;
+  background-color: rgba(86, 75, 75, 0.3);
+  .title {
+    font-size: 20px;
+    width: 100%;
+    padding-bottom: 5px;
+    text-align: center;
+    font-weight: bold;
+  }
+  .items {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .item {
+    white-space: nowrap;
+    text-align: center;
+    padding: 5px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    .name {
+      position: absolute;
+      top: 50px;
+      font-weight: bold;
+      writing-mode: tb-rl;
+    }
+    .value {
+      margin-bottom: 10px;
+    }
+    .bar {
+      width: 40px;
+      height: 250px;
+      background-color: #ffffff;
+    }
+    .triangle {
+      width: 0;
+      height: 0;
+      border: 20px solid #ffffff00;
+    }
+    .first {
+      background-color: #cc1e1e;
+    }
+    .second {
+      background-color: #f23a3b;
+    }
+    .third {
+      background-color: #f05926;
+    }
+    .tri1 {
+      border-top-color: #cc1e1e;
+      color: #cc1e1e;
+    }
+    .tri2 {
+      border-top-color: #f23a3b;
+      color: #f23a3b;
+    }
+    .tri3 {
+      border-top-color: #f05926;
+      color: #f05926;
+    }
+  }
+}

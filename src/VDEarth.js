@@ -15,6 +15,7 @@ import markerFactory from './markers/markerFactory'
 import socket from './socket'
 import { createOvCtrl } from './ovCtrl'
 import { createThemeCtrl } from './themeCtrl'
+import { createRankCtrl } from './rankCtrl'
 // import { minSize } from "./utils"
 // import { createModelClick } from "./eventLister"
 import './images/world_grey.jpg'
@@ -97,6 +98,7 @@ function initControls() {
 function initGroups() {
   // 创建基础组
   this.baseGroup = new Group()
+  this.baseGroup.name = 'baseGroup'
   this.scene.add(this.baseGroup)
 }
 
@@ -109,43 +111,43 @@ function createStars() {
 
 // 创建对象
 function createMarkers() {
-  let self = this
+  let markers = this.options.markers
+  if (markers) {
+    this.baseGroup.remove(this.markerGroup)
+    this.markerGroup = new Group()
+    this.markerGroup.name = 'markerGroup'
+    let makerFac = null
 
-  // // 创建连接
-  // var mySocket = new socket(
-  //   this.options.server,
-  //   this.options.port,
-  //   this.options.account,
-  //   this.options.password
-  // )
-  // mySocket.init(function (data) {
-  self.markerGroup = new Group()
-  // 创建标记
-  // var myMarkers = new marker()
-  // // 柱形
-  // myMarkers.addBoxMarkers(self.markerGroup, self.radius, data)
-  // // 加载字体
-  // if (self.font) {
-  //   myMarkers.addNameMarkers(self.markerGroup, self.radius, data, self.font)
-  // } else {
-  //   fontloader.load('./fonts/SimHei_Regular.json', function (font) {
-  //     self.font = font
-  //     myMarkers.addNameMarkers(self.markerGroup, self.radius, data, self.font)
-  //   })
-  // }
-  for (var i = 0; i < self.options.markers.length; i++) {
-    let makerFac = markerFactory.create(self.options.markers[i])
-    makerFac.add(self.markerGroup)
+    // 创建标记
+    for (var i = 0; i < markers.length; i++) {
+      // 新增标记
+      makerFac = markerFactory.create(Object.assign(this.default.barMarker, markers[i]))
+      makerFac.add(this.markerGroup)
+
+      makerFac = markerFactory.create(Object.assign(this.default.textMarker, markers[i]))
+      makerFac.add(this.markerGroup)
+
+      makerFac = markerFactory.create(Object.assign(this.default.imgMarker, markers[i]))
+      makerFac.add(this.markerGroup)
+    }
+    this.baseGroup.add(this.markerGroup)
   }
-  self.baseGroup.add(self.markerGroup)
-  // })
   this.scene.add(this.baseGroup)
 }
 
 // 创建地球
 function createEarth() {
   var self = this
-  switch (this.options.theme) {
+
+  self.baseGroup.children.forEach(obj => {
+    if (obj.type === 'Group' && obj.name == 'globeGroup') {
+      self.baseGroup.remove(obj)
+    }
+  })
+  self.globeGroup = new Group()
+  self.globeGroup.name = 'globeGroup'
+
+  switch (parseInt(this.options.theme)) {
     // 贴图地球
     case 1: {
       // 加载贴图
@@ -153,7 +155,7 @@ function createEarth() {
       globeTextureLoader.load('./images/world_theme1.jpg', function (textrue) {
         // 创建地球模型
         let globalMesh = new model().createGlobe(self.options.radius, textrue)
-        self.baseGroup.add(globalMesh)
+        self.globeGroup.add(globalMesh)
       })
       break
     }
@@ -173,23 +175,60 @@ function createEarth() {
           self.earthImg,
           self.dotTexture
         )
-        self.baseGroup.add(globelParticles)
+        self.globeGroup.add(globelParticles)
+      }
+      break
+    }
+    case 3: {
+      this.earthImgPath = './images/world_grey.jpg'
+      this.dotTexture = new TextureLoader().load('./images/dot.png')
+      this.shineTexture = new TextureLoader().load('./images/shine.png')
+      var earthSrcImgEle = document.createElement('img')
+      earthSrcImgEle.src = this.earthImgPath
+      earthSrcImgEle.onload = () => {
+        computeImgData.call(self, earthSrcImgEle)
+        // 球体
+        let globelParticles = new model().createGlobeParticles(
+          self.options.radius, // 半径
+          250, // 分割数
+          self.earthImg,
+          self.dotTexture
+        )
+        self.globeGroup.add(globelParticles)
 
         // 外球体
         let ballBox = new model().createBallBox(self.options.radius * 1.2)
-        this.baseGroup.add(ballBox)
+        this.globeGroup.add(ballBox)
 
         // 外球亮点
         let shinePoints = new model().createShinePoints(ballBox.geometry, this.shineTexture, 30)
-        this.baseGroup.add(shinePoints)
+        this.globeGroup.add(shinePoints)
       }
-      break
     }
     default:
       break
   }
+  this.baseGroup.add(this.globeGroup)
 }
 
+// socket初始化
+function initSocket(callback) {
+  var self = this
+
+  // 创建连接
+  var mySocket = new socket(
+    this.options.socket.server,
+    this.options.socket.port,
+    this.options.socket.account,
+    this.options.socket.password
+  )
+  mySocket.init(function (data) {
+    if (_.isFunction(callback)) {
+      callback(data)
+    }
+  })
+}
+// 图片透明度转换
 function computeImgData(ele) {
   let canvas = document.createElement('canvas')
   let ctx = canvas.getContext('2d')
@@ -209,77 +248,34 @@ class VDEarth {
     this.controls = null
     this.contentWidth = 0
     this.contentHeight = 0
+    this.default = {
+      barMarker: { type: 'bar', radius: 200, width: 5, height: 5 },
+      imgMarker: {
+        type: 'img',
+        imgUrl: './images/fire.png',
+        radius: 200,
+        size: 10,
+      },
+      textMarker: {
+        type: 'text',
+        font: './fonts/SimHei_Regular.json',
+        radius: 200,
+        size: 10,
+      },
+    }
 
     this.options = {
       container: document.querySelector('#vdEarth'),
       radius: 200,
-      server: 'localhost',
-      port: 9998,
-      account: 'admin',
-      password: '123456',
+      dataSource: 'default',
+      socket: {
+        server: 'localhost',
+        port: 9998,
+        account: 'admin',
+        password: '123456',
+      },
       theme: 2,
-      markers: [
-        {
-          type: 'bar',
-          radius: 200,
-          width: 5,
-          height: 5,
-          data: [
-            {
-              name: '中国',
-              lng: '119',
-              lat: '53',
-              total: '1111111',
-            },
-            {
-              name: '美国',
-              lng: '0',
-              lat: '0',
-              total: '890000',
-            },
-          ],
-        },
-        {
-          type: 'img',
-          imgUrl: './images/fire.png',
-          radius: 200,
-          size: 10,
-          data: [
-            {
-              name: '中国',
-              lng: '119',
-              lat: '53',
-              total: '1111111',
-            },
-            {
-              name: '美国',
-              lng: '0',
-              lat: '0',
-              total: '890000',
-            },
-          ],
-        },
-        {
-          type: 'text',
-          font: './fonts/SimHei_Regular.json',
-          radius: 200,
-          size: 10,
-          data: [
-            {
-              name: '中国',
-              lng: '119',
-              lat: '53',
-              total: '1111111',
-            },
-            {
-              name: '美国',
-              lng: '0',
-              lat: '0',
-              total: '890000',
-            },
-          ],
-        },
-      ],
+      markers: [],
     }
   }
   init(opt = {}) {
@@ -298,11 +294,39 @@ class VDEarth {
     animate.call(this)
     createEarth.call(this)
 
-    createMarkers.call(this)
-    createOvCtrl()
-    createThemeCtrl(function (val) {
+    this.ovCtrl = createOvCtrl()
+    this.themeCtrl = createThemeCtrl(this.options.theme, function (val) {
       self.options.theme = val
+      createEarth.call(self)
     })
+    this.rankCtrl = createRankCtrl()
+
+    // 加载数据源
+    switch (this.options.dataSource) {
+      case 'socket':
+        initSocket.call(this, function (data) {
+          if (data.marker) {
+            self.options.markers.push({ data: data.marker })
+            createMarkers.call(self)
+          } else if (data.overview) {
+            self.ovCtrl.querySelector('.total').innerText = data.overview[0].total
+            self.ovCtrl.querySelector('.cure').innerText = data.overview[0].cure
+            self.ovCtrl.querySelector('.death').innerText = data.overview[0].death
+            self.ovCtrl.querySelector('.new').innerText = data.overview[0].new
+            self.ovCtrl.querySelector('.now').innerText = data.overview[0].now
+            self.ovCtrl.querySelector('.time span').innerText = data.overview[0].time
+          } else if (data.rank) {
+            for (let i = 0, rows = self.rankCtrl.querySelectorAll('.item'); i < rows.length; i++) {
+              rows[i].querySelector('.name').innerText = data.rank[i].name
+              rows[i].querySelector('.value').innerText = data.rank[i].total
+            }
+          }
+        })
+        break
+      default:
+        createMarkers.call(this)
+        break
+    }
   }
 }
 

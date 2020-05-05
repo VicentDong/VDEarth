@@ -9,23 +9,22 @@ class ImgMarker extends Marker {
   // 添加图片标注 列表
   add(group) {
     let self = this
-    let items = this.opt.data
     // 加载贴图
     let textureLoader = new TextureLoader()
     textureLoader.load(this.opt.imgUrl, function (texture) {
-      for (var i = 0; i < items.length; i++) {
+      let data = self.opt.data
+      for (var i = 0; i < data.length; i++) {
         let imgMarker = _.find(group.children, model => {
-          return model.userData.type == 'img' && model.userData.name == items[i].name
+          return model.userData.type == 'img' && model.userData.name == data[i].name
         })
         if (!imgMarker) {
           let markerGeom = self.geom.createImgMarkerGeom(self.opt.size)
           let markerMat = self.mat.createImgMarkerMat(texture)
           imgMarker = self.createMesh(markerGeom, markerMat)
           // 定位
-          // 定位
           let position = getPosition(
-            parseFloat(items[i].lng),
-            parseFloat(items[i].lat),
+            parseFloat(data[i].lng),
+            parseFloat(data[i].lat),
             self.opt.radius
           )
           imgMarker.position.set(position.x, position.y, position.z)
@@ -35,7 +34,7 @@ class ImgMarker extends Marker {
           group.add(imgMarker)
         }
         // 设置柱形图的自定义数据为遍历的数据项
-        imgMarker.userData = Object.assign({ type: self.opt.type }, items[i])
+        imgMarker.userData = Object.assign({ type: self.opt }, data[i])
       }
     })
   }

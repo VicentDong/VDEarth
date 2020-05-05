@@ -8,27 +8,27 @@ class TextMarker extends Marker {
   }
   // 添加多个文字标注
   add(group) {
-    let items = this.opt.data
     let self = this
     let fontloader = new FontLoader()
     fontloader.load(this.opt.font, function (font) {
       if (!font) {
         return new Error('no font json found')
       }
-      for (let i = 0; i < items.length; i++) {
+      let data = self.opt.data
+      for (let i = 0; i < data.length; i++) {
         let nameMarker = _.find(group.children, model => {
-          return model.userData.type == 'name' && model.userData.name == items[i].name
+          return model.userData.type == 'text' && model.userData.name == data[i].name
         })
 
         if (!nameMarker) {
-          let geometry = self.geom.createNameMarkerGeom(items[i].name + ':' + items[i].total, font)
+          let geometry = self.geom.createNameMarkerGeom(data[i].name + ':' + data[i].total, font)
           let material = self.mat.createNameMarkerMat()
           nameMarker = self.createMesh(geometry, material)
 
           // 定位
           let position = getPosition(
-            parseFloat(items[i].lng),
-            parseFloat(items[i].lat),
+            parseFloat(data[i].lng),
+            parseFloat(data[i].lat),
             self.opt.radius
           )
           nameMarker.position.set(position.x, position.y - 10, position.z)
@@ -37,7 +37,7 @@ class TextMarker extends Marker {
           group.add(nameMarker)
         }
         // nameMarker.visible = false
-        nameMarker.userData = Object.assign({ type: self.opt.type }, items[i])
+        nameMarker.userData = Object.assign({ type: self.type }, data[i])
       }
     })
   }
